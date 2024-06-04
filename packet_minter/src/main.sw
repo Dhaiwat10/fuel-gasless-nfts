@@ -4,7 +4,7 @@ use shared::PacketMinter;
 use std::{
     b512::B512,
     constants::ZERO_B256,
-    token::mint_to_address,
+    asset::mint_to,
     tx::{tx_id, tx_witness_data, tx_witnesses_count},
     ecr::ec_recover_address,
     hash::{sha256, Hash},
@@ -24,7 +24,7 @@ impl PacketMinter for Contract {
     fn mint_packet(subject: Address) {
         ensure_tx_signed();
 
-        mint_to_address(storage.packet_predicate.read(), subject.into(), 1);
+        mint_to(Identity::Address(storage.packet_predicate.read()), subject.into(), 1);
     }
 }
 

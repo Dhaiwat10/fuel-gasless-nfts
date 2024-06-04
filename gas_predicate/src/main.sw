@@ -55,14 +55,14 @@ fn main(sub_ids: Vec<SubId>, signature_index: Option<u64>) -> bool {
     let mut i = 0;
 
     // Calculate all expected AssetIds based on the provided SubIds
-    let mut nft_asset_ids: Vec<AssetId> = Vec::with_capacity(sub_ids.len);
-    while i < sub_ids.len {
+    let mut nft_asset_ids: Vec<AssetId> = Vec::with_capacity(sub_ids.len());
+    while i < sub_ids.len() {
         nft_asset_ids.push(AssetId::new(NFT_CONTRACT_ID, sub_ids.get(i).unwrap()));
         i = i + 1;
     }
 
-    let mut unknown_asset_ids: Vec<AssetId> = Vec::with_capacity(sub_ids.len);
-    let mut potential_packet_ids: Vec<AssetId> = Vec::with_capacity(sub_ids.len);
+    let mut unknown_asset_ids: Vec<AssetId> = Vec::with_capacity(sub_ids.len());
+    let mut potential_packet_ids: Vec<AssetId> = Vec::with_capacity(sub_ids.len());
 
     // Check all inputs are valid
     let num_inputs = input_count().as_u64();
@@ -82,7 +82,7 @@ fn main(sub_ids: Vec<SubId>, signature_index: Option<u64>) -> bool {
                     if asset_is_nft && signature_index.is_none() {
                         let owner = input_coin_owner(i).unwrap();
                         // There's no relayer signature, so we need to track all NFT owners so we can look for packets later
-                        potential_packet_ids.push(AssetId::new(PACKET_MINTER_CONTRACT_ID, owner.value));
+                        potential_packet_ids.push(AssetId::new(PACKET_MINTER_CONTRACT_ID, owner.into()));
                     }
 
                     if !asset_is_nft {
@@ -153,9 +153,9 @@ fn main(sub_ids: Vec<SubId>, signature_index: Option<u64>) -> bool {
         if (signer_address != SIGNER) {
             return false;
         }
-    } else if (unknown_asset_ids.len > 0) {
+    } else if (unknown_asset_ids.len() > 0) {
         let mut i = 0;
-        while i < unknown_asset_ids.len {
+        while i < unknown_asset_ids.len() {
             let unknown_asset_is_packet = asset_exists_in_vec(unknown_asset_ids.get(i).unwrap(), potential_packet_ids);
             if (!unknown_asset_is_packet) {
                 return false;
@@ -193,7 +193,7 @@ fn input_contract_id(index: u64) -> Option<ContractId> {
 
 fn asset_exists_in_vec(asset_id: AssetId, nft_asset_ids: Vec<AssetId>) -> bool {
     let mut i = 0;
-    while i < nft_asset_ids.len {
+    while i < nft_asset_ids.len() {
         if asset_id == nft_asset_ids.get(i).unwrap() {
             return true;
         }

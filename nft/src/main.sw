@@ -3,7 +3,7 @@ contract;
 mod src20;
 
 use src20::SRC20;
-use std::{call_frames::contract_id, hash::Hash, storage::storage_string::*, string::String, token::mint_to};
+use std::{hash::Hash, storage::storage_string::*, string::String, asset::mint_to};
 use shared::Mint;
 
 storage {
@@ -28,7 +28,7 @@ impl Mint for Contract {
         let new_id = storage.total_assets.read();
         require(new_id < MAX_SUPPLY, Errors::SupplyCap);
         let new_sub_id = u64_to_b256(new_id);
-        let asset_id = AssetId::new(contract_id(), new_sub_id);
+        let asset_id = AssetId::new(ContractId::this(), new_sub_id);
 
         storage.total_assets.write(new_id + 1);
         mint_to(recipient, new_sub_id, 1);
